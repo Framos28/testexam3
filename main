@@ -1,0 +1,209 @@
+/*
+Francisco Ramos
+Exam 3
+11/29/2022
+
+*/
+
+#include <iostream>
+#include <cctype>
+#include <cstring>
+#include "input.h"
+#include<fstream>
+#include<windows.h> // acess windows libary for color
+#include <vector>
+
+HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE); //fucntion for color on console screen;
+
+//Prototypes
+char mainMenuOption();
+void storeData(vector <double>& vC);
+void vowel(char input);
+
+
+
+using namespace std;
+int main()
+{
+    do
+    {
+
+        switch (toupper(mainMenuOption()))
+        {
+        case 'X': return 0;
+        case 'R': //Random Assignment from read file
+        {
+			cout << "Help";
+		
+        }
+		break;
+        case 'S': //Solve the problem
+		{
+			char puzzle[80] = "the unknown";
+			char hint[80] = " ABCDEFGHIJKLMNOPQRSTUV";
+
+			char guessing[80];
+
+			strcpy_s(guessing, puzzle);
+
+			for (int i = 0; i < strlen(guessing); i++)
+				if (isalpha(guessing[i]))
+					guessing[i] = char(219); 
+
+            system("cls");
+            cout << "\n\tEasy Level\n";
+
+			strcpy_s(guessing, puzzle);
+
+			for (int i = 0; i < strlen(guessing); i++)
+				if (isalpha(guessing[i]))
+					guessing[i] = char(219);
+
+			cout << "\n\tPuzzle: " << guessing << '\n';
+
+			do
+			{
+				cout << "\n\tPuzzle: " << guessing << '\n';
+				cout << "\n\tHint: " << hint << '\n';
+            
+			cout << "\n\n\t\tGame Menu Options (String object Implementation)";
+            cout << "\n\t" + string(60, char(205));     
+
+			cout << "\n\t\t1. Request a vowel: ";
+			cout << "\n\t\t2. Request a consonant: ";
+			cout << "\n\t\t3. Solve";
+			cout << "\n\t" + string(60, char(205));
+
+			cout << "\n\t\t0. return";
+			cout << "\n\t" + string(60, char(205));
+			do
+			{
+				int option = inputInteger("\n\t\tOption: ", 0, 3);
+				switch (option)
+				{
+				case 0: break;
+				case 1: 
+				{					
+					if (toupper(inputChar("\nEnter a vowel", true)) != 'A' || 'E' || 'I' || 'O' || 'U')
+					{
+						cout << "\nOne of the vowels A E I O U must be entered.";
+					}
+
+				}continue;
+				case 2: "Reqiest a vowel"; continue;
+				case 3: "Solve";  continue;
+				}
+			} while (true);
+
+			do
+			{
+				cout << "\n\tPuzzle: " << guessing << '\n';
+				cout << "\n\tHint: " << hint << '\n';
+				char letter;
+				cout << "\n\t\tEnter a letter: ";
+				cin >> letter;
+				cin.clear();
+				cin.ignore(9999, '\n');
+
+				if (isalpha(letter))
+				{
+					for (int i = 0; i < strlen(puzzle); i++)
+						if (letter == puzzle[i])
+							guessing[i] = letter;
+
+					for (int i = 0; i < strlen(hint); i++)
+						if (toupper(letter) == hint[i])
+							hint[i] = ' ';
+				}
+				if (letter == '.')
+					break;
+
+				cout << "\n\t\tDO you want to solve? (Y/N)";
+				char input;
+				cin >> input;
+				cin.clear();
+				cin.ignore(9999, '\n');
+
+				if (toupper(input) == 'Y')
+				{
+					char answer[80];
+					cout << "\n\t\tYour answer? ";
+					cin.getline(answer, 80);
+
+					if (strcmp(answer, puzzle) == 0)
+					{
+						cout << "\n\t\tCorrent!\n";
+						break;
+					}
+					else
+					{
+						cout << "\n\t\tIncorrent!\n";
+						continue;
+					}
+				}
+
+			} while (true);
+
+			return 0;
+		}
+        
+         
+        }
+
+    }while (true);
+
+	return 0;
+}
+
+char mainMenuOption()
+{
+	system("cls"); // clears screen everytime 
+
+	cout << "\n\tCMPR120 Exam3A: C-string array or string object by Francisco Ramos (11/29/2022)\n";
+	cout << "\n\t" + string(90, char(205));
+
+
+	cout << "\n\t\tR. Randomly choose a word from the PUZZLES.TXT file";
+
+
+	cout << "\n\t\tS. Solve Implementation";
+
+;
+	cout << "\n\t" + string(90, char(205));
+	cout << "\n\t\tX.Exit the program";
+	cout << "\n\t" + string(90, char(205));
+
+
+	return inputChar("\n\t\tOption : ", static_cast<string>("RSX"));
+
+}
+void storeData(vector <double>& vP)
+{
+
+	ifstream infile;
+	string filename = inputString("\n\tEnter the filename (PUZZLES.TXT) that holds the data of puzzles : ", true);
+	infile.open(filename);
+	if (infile.fail())
+	{
+		cout << "\n\tERROR: File, " << filename << ", does not exist.\n";
+		return;
+	}
+	double value;
+	while (infile >> value)
+	{
+		vP.push_back(value);
+	}
+	infile.close();
+	cout << "\n\tData from file, " << filename << ", has been read and stored into the vector.\n";
+}
+
+void vowel(char input)
+{
+	inputChar("\nEnter a vowel", true);
+
+	toupper(input);
+	if (input != 'A' || 'E' || 'I' || 'O' || 'U')
+	{
+		cout << "\nOne of the vowels A E I O U must be entered.";
+	}
+}
