@@ -8,149 +8,50 @@ Exam 3
 #include <iostream>
 #include <cctype>
 #include <cstring>
-#include "input.h"
-#include<fstream>
+#include "input.h"  // header file
+#include<fstream>  //file manip
 #include<windows.h> // acess windows libary for color
-#include <vector>
+#include <vector> //vector for random (maybe)
+#include <string> //string
+#include <ctime> //for random
 
 HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE); //fucntion for color on console screen;
 
+
 //Prototypes
-char mainMenuOption();
-void storeData(vector <double>& vC);
-void vowel(char input);
+char mainMenuOption(); // interactive menuu
+void imBatMan();
+bool letterValidation(char userInput, int options);
+void  secondMenu(vector<string> vPuzzles);
+void fetchData(vector <string>& vRandom);
 
 
 
 using namespace std;
 int main()
 {
-    do
-    {
+	system("cls"); // clears screen everytime
+	vector<string> vRandom;
 
-        switch (toupper(mainMenuOption()))
-        {
-        case 'X': return 0;
-        case 'R': //Random Assignment from read file
-        {
-			cout << "Help";
-		
-        }
-		break;
-        case 'S': //Solve the problem
+	do {
+		switch (toupper(mainMenuOption())) //converts the input into an upper letter
 		{
-			char puzzle[80] = "the unknown";
-			char hint[80] = " ABCDEFGHIJKLMNOPQRSTUV";
-
-			char guessing[80];
-
-			strcpy_s(guessing, puzzle);
-
-			for (int i = 0; i < strlen(guessing); i++)
-				if (isalpha(guessing[i]))
-					guessing[i] = char(219); 
-
-            system("cls");
-            cout << "\n\tEasy Level\n";
-
-			strcpy_s(guessing, puzzle);
-
-			for (int i = 0; i < strlen(guessing); i++)
-				if (isalpha(guessing[i]))
-					guessing[i] = char(219);
-
-			cout << "\n\tPuzzle: " << guessing << '\n';
-
-			do
-			{
-				cout << "\n\tPuzzle: " << guessing << '\n';
-				cout << "\n\tHint: " << hint << '\n';
-            
-			cout << "\n\n\t\tGame Menu Options (String object Implementation)";
-            cout << "\n\t" + string(60, char(205));     
-
-			cout << "\n\t\t1. Request a vowel: ";
-			cout << "\n\t\t2. Request a consonant: ";
-			cout << "\n\t\t3. Solve";
-			cout << "\n\t" + string(60, char(205));
-
-			cout << "\n\t\t0. return";
-			cout << "\n\t" + string(60, char(205));
-			do
-			{
-				int option = inputInteger("\n\t\tOption: ", 0, 3);
-				switch (option)
-				{
-				case 0: break;
-				case 1: 
-				{					
-					if (toupper(inputChar("\nEnter a vowel", true)) != 'A' || 'E' || 'I' || 'O' || 'U')
-					{
-						cout << "\nOne of the vowels A E I O U must be entered.";
-					}
-
-				}continue;
-				case 2: "Reqiest a vowel"; continue;
-				case 3: "Solve";  continue;
-				}
-			} while (true);
-
-			do
-			{
-				cout << "\n\tPuzzle: " << guessing << '\n';
-				cout << "\n\tHint: " << hint << '\n';
-				char letter;
-				cout << "\n\t\tEnter a letter: ";
-				cin >> letter;
-				cin.clear();
-				cin.ignore(9999, '\n');
-
-				if (isalpha(letter))
-				{
-					for (int i = 0; i < strlen(puzzle); i++)
-						if (letter == puzzle[i])
-							guessing[i] = letter;
-
-					for (int i = 0; i < strlen(hint); i++)
-						if (toupper(letter) == hint[i])
-							hint[i] = ' ';
-				}
-				if (letter == '.')
-					break;
-
-				cout << "\n\t\tDO you want to solve? (Y/N)";
-				char input;
-				cin >> input;
-				cin.clear();
-				cin.ignore(9999, '\n');
-
-				if (toupper(input) == 'Y')
-				{
-					char answer[80];
-					cout << "\n\t\tYour answer? ";
-					cin.getline(answer, 80);
-
-					if (strcmp(answer, puzzle) == 0)
-					{
-						cout << "\n\t\tCorrent!\n";
-						break;
-					}
-					else
-					{
-						cout << "\n\t\tIncorrent!\n";
-						continue;
-					}
-				}
-
-			} while (true);
-
-			return 0;
+		case 'X': return 0;
+		case 'R': //Random Assignment from read file
+		{
+			fetchData(vRandom);
 		}
-        
-         
-        }
-
-    }while (true);
+		break;
+		case 'S': //Solve the problem
+		{
+			system("cls");
+			
+			secondMenu(vRandom);
+			
+		}
+		break;
+		}
+	} while (true);
 
 	return 0;
 }
@@ -158,52 +59,327 @@ int main()
 char mainMenuOption()
 {
 	system("cls"); // clears screen everytime 
+	
+	SetConsoleTextAttribute(h, 6);
+	imBatMan();
+	SetConsoleTextAttribute(h, 15);
 
+	SetConsoleTextAttribute(h, 15);
 	cout << "\n\tCMPR120 Exam3A: C-string array or string object by Francisco Ramos (11/29/2022)\n";
 	cout << "\n\t" + string(90, char(205));
 
-
+	SetConsoleTextAttribute(h, 13);
 	cout << "\n\t\tR. Randomly choose a word from the PUZZLES.TXT file";
 
 
 	cout << "\n\t\tS. Solve Implementation";
 
-;
+	SetConsoleTextAttribute(h, 15);
 	cout << "\n\t" + string(90, char(205));
+	SetConsoleTextAttribute(h, 13);
 	cout << "\n\t\tX.Exit the program";
+	SetConsoleTextAttribute(h, 15);
 	cout << "\n\t" + string(90, char(205));
 
-
-	return inputChar("\n\t\tOption : ", static_cast<string>("RSX"));
+	return inputChar("\n\t\tOption : \n\t", static_cast<string>("RSX"));
 
 }
-void storeData(vector <double>& vP)
+
+void imBatMan()
 {
+
+	cout << "\n                               .?                         ? .";
+	cout << "\n                           .????.           ???           .????.";
+	cout << "\n                        .????.           ?????????           .????.";
+	cout << "\n                     .????.            ???       ???            .????.";
+	cout << "\n                  .????.              ????       ????              .????.";
+	cout << "\n               .????.                  ??       ???                  .????.";
+	cout << "\n            .????.                            ????                       .????.";
+	cout << "\n         .????.                             ???                             .????.";
+	cout << "\n            .????.                         ???                           .????.";
+	cout << "\n               .????.                      ???                        .????.";
+	cout << "\n                  .????.                   ???                     .????.";
+	cout << "\n                     .????.                ???                  .????.";
+	cout << "\n                        .????.                               .????.";
+	cout << "\n                           .????.          ???            .????.";
+	cout << "\n                               .?          ???            ?.";
+
+	cout << "\n\t\t\t\t        IM BATMAN!!";
+
+	cout << "\n\n\n";
+}
+
+void secondMenu(vector<string> vPuzzles) // menu for solving
+{
+	srand(time(0)); //randomizer
+
+
+	char puzzle[80];
+	if (vPuzzles.empty())
+	{
+		strcpy_s(puzzle, 80, "please input file");
+	}
+	else
+	{
+		int randomIndex = rand() % vPuzzles.size();
+
+		const char* randomword = vPuzzles[randomIndex].c_str();
+		strcpy_s(puzzle, 80, randomword);
+	}
+	// get the puzzle from the text file randomly
+	for (int i = 0; puzzle[i] != '\0'; i++)
+		cout << puzzle[i];
+
+	char guessing[80];
+	
+	char hint[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	
+	strcpy_s(guessing, puzzle);
+	for (int i = 0; i < strlen(guessing); i++)
+		if (isalpha(guessing[i]))
+			guessing[i] = char(219);
+	
+
+	do
+	{
+		system("cls");
+		SetConsoleTextAttribute(h, 5);
+		cout << "\t\tGuessing: " << guessing << '\n';
+		SetConsoleTextAttribute(h, 6);
+		cout << "\t\tHint: " << hint << '\n';
+		
+		SetConsoleTextAttribute(h, 15);
+		cout << "\n\t\tGame Menu Options " << '\n';
+		cout << "\t" << string(70, char(205)) << '\n';
+		cout << "\t\t1. Request a consonant\n";
+		cout << "\t\t2. Request a vowel\n";
+		cout << "\t\t3. Solve\n";
+		cout << "\t" << string(70, char(196)) << '\n';
+		cout << "\t\t0. return\n";
+		cout << "\t" << string(70, char(205)) << '\n';
+		int flag = 0;
+		int option = inputInteger("\n\t\tOption: ", 0, 3);
+		switch (option)
+		{
+		case 1:
+		{
+			char letter;
+
+			cout << "\nEnter a constanent: ";
+			cin >> letter;
+
+			if (!letterValidation(letter, option))
+			{
+
+				cout << "ERROR-2: Invalid input. Must be a character from the list of ''B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', or 'Z'.";
+				system("pause");
+				break;
+			}
+
+			cin.clear();
+			cin.ignore(999, '\n');
+
+			if (isalpha(letter))
+			{
+
+				for (int i = 0; i < strlen(hint); i++)
+					if (toupper(letter) == hint[i])
+					{
+						hint[i] = ' ';
+						flag = 1;
+					}
+				if (flag == 0)
+				{
+					cout << "\n\t the letter '" << letter << "' is already used";
+					system("pause");
+					break;
+				}
+
+				for (int i = 0; i < strlen(puzzle); i++)
+					if (letter == puzzle[i])
+					{
+						guessing[i] = letter;
+						cout << "\n\t the letter '" << letter << "' is in the word!" << '\n';
+						system("pause");
+						cout << "\n";
+					}
+
+				cout << "Guessing: " << guessing << '\n';
+				cout << "Hint: " << hint << '\n';
+			}
+			if (letter == '.')
+				break;
+
+		}
+		break;
+		case 2:
+		{
+			char letter;
+
+			cout << "\nEnter a vowel: ";
+			cin >> letter;
+
+			if (!letterValidation(letter, option))
+			{
+
+				cout << "ERROR-2: Invalid input. Must be a character from the list of ''A', 'E', 'I', 'O', or 'U'.";
+				system("pause");
+				break;
+			}
+			cin.clear();
+			cin.ignore(999, '\n');
+
+			if (isalpha(letter))
+			{
+
+				for (int i = 0; i < strlen(hint); i++)
+					if (toupper(letter) == hint[i])
+					{
+						hint[i] = ' ';
+						flag = 1;
+					}
+				if (flag == 0)
+				{
+					cout << "\n\t the letter '" << letter << "' is already used";
+					system("pause");
+					break;
+				}
+
+				for (int i = 0; i < strlen(puzzle); i++)
+					if (letter == puzzle[i])
+					{
+						guessing[i] = letter;
+						cout << "\n\t the letter '" << letter << "' is in the word!" << '\n';
+						system("pause");
+						cout << "\n";
+					}
+
+				cout << "Guessing: " << guessing << '\n';
+				cout << "Hint: " << hint << '\n';				
+			}
+			if (letter == '.')
+				break;
+		}
+		break;
+		case 3:
+		{
+			cout << "\nDo you want to solve?";
+			char input;
+			cin >> input;
+			cin.clear();
+			cin.ignore(999, '\n');
+
+			if (toupper(input) == 'Y')
+			{
+				char answer[80];
+				cout << "Your answer? ";
+				cin.getline(answer, 80);
+
+				if (strcmp(answer, puzzle) == 0)
+				{
+					cout << "\nCorrect!\n";
+
+					system("pause");
+					break;
+				}
+				else
+				{
+					cout << "\nIncorrect!\n";
+					system("pause");
+					continue;
+				}
+			}
+		}
+		break;
+		case 0: system("cls"); return;
+
+			break;
+		}
+
+	} while (true);
+}
+
+
+void fetchData(vector<string>& vRandom)
+{
+	system("cls"); // clears screen everytime
 
 	ifstream infile;
-	string filename = inputString("\n\tEnter the filename (PUZZLES.TXT) that holds the data of puzzles : ", true);
+	string filename = inputString("\n\tEnter the filename (PUZZLES.TXT) that holds the data of puzzles : ", true); // validates file name
 	infile.open(filename);
-	if (infile.fail())
+	if (infile.fail()) //file validation
 	{
-		cout << "\n\tERROR: File, " << filename << ", does not exist.\n";
-		return;
+		SetConsoleTextAttribute(h, 12);
+		cout << "\n\tERROR: File: '" << filename << "' does not exist.\n\t";
+		SetConsoleTextAttribute(h, 15);
+		system("pause");
 	}
-	double value;
-	while (infile >> value)
+	else
 	{
-		vP.push_back(value);
+		string puzzles;
+		
+		while (infile >> puzzles) // vector for random assignment
+		{
+			getline(infile, puzzles); // ensures spaces are taken in
+			vRandom.push_back(puzzles);
+		}
+
+		infile.close();
+
+		SetConsoleTextAttribute(h, 10);
+		cout << "\n\tFile successfully read! \n\tAn 'item' has been randomly chosen from the file, puzzles.txt.\n\t";
+		SetConsoleTextAttribute(h, 15);
+
+		cout << puzzles;
+		system("pause"); 
 	}
-	infile.close();
-	cout << "\n\tData from file, " << filename << ", has been read and stored into the vector.\n";
 }
 
-void vowel(char input)
+bool letterValidation(char userInput, int options)
 {
-	inputChar("\nEnter a vowel", true);
+	int flag = 0;
 
-	toupper(input);
-	if (input != 'A' || 'E' || 'I' || 'O' || 'U')
+	switch (tolower(userInput))
 	{
-		cout << "\nOne of the vowels A E I O U must be entered.";
+	case 'e':
+	case 'u':
+	case 'o':
+	case 'a':
+	case 'i':
+		flag = 0;
+		break;
+	default:
+		flag = 1;
 	}
+	if (options == 1 && flag == 1)
+		return true;
+	else if (options == 2 && flag == 0)
+		return true;
+	else
+		return false;
+}
+
+char randomizor()
+{
+	ifstream infile;
+	string filename;
+
+	infile.open(filename);
+	if (infile.fail()) //file validation
+	{
+		SetConsoleTextAttribute(h, 12);
+		cout << "\n\tERROR: File: '" << filename << "' does not exist.\n\t";
+		SetConsoleTextAttribute(h, 15);
+		system("pause");
+	}
+
+	vector<string> random;
+	string line;
+	while (getline(fin, line))
+		lines.push_back(line);
+
+	while()
+
+	fin.close();
+
 }
